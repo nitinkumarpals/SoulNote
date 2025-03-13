@@ -1,2 +1,14 @@
-package com.nitinkumarpals.nitin.firstProject.firstProject;public class AppConfig {
+package com.nitinkumarpals.nitin.firstProject.firstProject;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+
+@Configuration
+public class AppConfig {
+    @Bean
+    @Scope("singleton")
+    Apple getApple(){
+        return new Apple();
+    }
 }
