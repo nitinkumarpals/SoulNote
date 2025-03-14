@@ -7,11 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class FirstProjectApplication implements CommandLineRunner {
-
+//
+//	@Autowired
+//	Apple apple1;
+//	@Autowired
+//	Apple apple2;
 	@Autowired
-	Apple apple1;
-	@Autowired
-	Apple apple2;
+	DbService db;
 	public static void main(String[] args) {
 		SpringApplication.run(FirstProjectApplication.class, args);
 
@@ -19,7 +21,8 @@ public class FirstProjectApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		apple1.eatApple();
-		apple2.eatApple();
+		System.out.println(db.getData());
+//		apple1.eatApple();
+//		apple2.eatApple();
 	}
 }
