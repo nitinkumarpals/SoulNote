@@ -2,10 +2,13 @@ package net.engineeringdigest.journalApp.controller;
 
 import net.engineeringdigest.journalApp.entity.JournalEntry;
 import net.engineeringdigest.journalApp.service.JournalEntryService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/journal")
@@ -20,24 +23,32 @@ public class JournalEntryController {
     }
 
     @PostMapping
-    public Boolean createEntry(@RequestBody JournalEntry myEntry) {
+    public JournalEntry createEntry(@RequestBody JournalEntry myEntry) {
+        myEntry.setDate(new Date());
         journalEntryService.saveEntry(myEntry);
-        return true;
+        return myEntry;
     }
 
     @GetMapping("id/{myId}")
-    public JournalEntry findJournalById(@PathVariable Long myId) {
-        return null;
+    public Optional<JournalEntry> findJournalById(@PathVariable ObjectId myId) {
+        return journalEntryService.findById(myId);
     }
 
     @DeleteMapping("id/{myId}")
-    public JournalEntry deleteJournalById(@PathVariable Long myId) {
-        return null;
+    public Boolean deleteJournalById(@PathVariable ObjectId myId) {
+        journalEntryService.deleteById(myId);
+        return true;
     }
 
     @PutMapping("id/{myId}")
-    public JournalEntry updateJournalById(@PathVariable Long myId, @RequestBody JournalEntry myEntry) {
-        return null;
+    public JournalEntry updateJournalById(@PathVariable ObjectId myId, @RequestBody JournalEntry newEntry) {
+        JournalEntry oldEntry = journalEntryService.findById(myId).orElse(null);
+        if(oldEntry != null){
+            oldEntry.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().isEmpty() ? newEntry.getTitle() : oldEntry.getTitle());
+            oldEntry.setContent(newEntry.getContent() != null && !newEntry.getContent().isEmpty() ? newEntry.getContent() : oldEntry.getContent());
+        }
+        journalEntryService.saveEntry(oldEntry);
+        return oldEntry;
     }
 
 }
