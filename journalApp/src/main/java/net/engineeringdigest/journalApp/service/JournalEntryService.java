@@ -24,6 +24,9 @@ public class JournalEntryService {
     public Optional<JournalEntry> findById(ObjectId id){
         return journalEntryRepo.findById(id);
     }
+    public boolean existsById(ObjectId id) {
+        return journalEntryRepo.existsById(id);
+    }
     public void deleteById(ObjectId id){
         journalEntryRepo.deleteById(id);
     }
