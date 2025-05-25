@@ -70,7 +70,7 @@ public class JournalEntryController {
     ) {
         JournalEntry oldEntry = journalEntryService.findById(myId).orElse(null);
         if (oldEntry != null) {
-            oldEntry.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().isEmpty() ? newEntry.getTitle() : oldEntry.getTitle());
+            oldEntry.setTitle(!newEntry.getTitle().isEmpty() ? newEntry.getTitle() : oldEntry.getTitle());
             oldEntry.setContent(newEntry.getContent() != null && !newEntry.getContent().isEmpty() ? newEntry.getContent() : oldEntry.getContent());
             journalEntryService.updateEntry(oldEntry);
             return new ResponseEntity<>(oldEntry, HttpStatus.OK);
