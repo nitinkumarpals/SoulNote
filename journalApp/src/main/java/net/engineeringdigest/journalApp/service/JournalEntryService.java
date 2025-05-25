@@ -25,19 +25,17 @@ public class JournalEntryService {
 
     @Transactional
     public void saveEntry(JournalEntry journalEntry, String username) {
-        try {
-            User user = userService.findByUsername(username);
-            journalEntry.setDate(new Date());
-            JournalEntry saved = journalEntryRepo.save(journalEntry);
-            user.getJournalEntries().add(saved);
-            userService.saveUser(user);
-        } catch (Exception e) {
-            log.error("exception ", e);
-        }
+        User user = userService.findByUsername(username);
+        journalEntry.setDate(new Date());
+        JournalEntry saved = journalEntryRepo.save(journalEntry);
+        user.getJournalEntries().add(saved);
+        userService.saveUser(user);
     }
-    public void updateEntry(JournalEntry journalEntry){
+
+    public void updateEntry(JournalEntry journalEntry) {
         journalEntryRepo.save(journalEntry);
     }
+
     public List<JournalEntry> getAll() {
         return journalEntryRepo.findAll();
     }

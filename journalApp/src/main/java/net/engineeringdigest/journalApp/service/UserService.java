@@ -29,7 +29,8 @@ public class UserService {
     public void deleteUser(ObjectId id) {
         userRepo.deleteById(id);
     }
-    public User findByUsername(String username){
+
+    public User findByUsername(String username) {
         return userRepo.findByUsername(username);
     }
 }
