@@ -37,5 +37,4 @@ build/
 src/main/resources/application.properties
 application.properties
 .vscode/
- .DS_Store
 
