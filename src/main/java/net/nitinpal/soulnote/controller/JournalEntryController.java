@@ -1,9 +1,9 @@
-package net.engineeringdigest.journalApp.controller;
+package net.nitinpal.soulnote.controller;
 
-import net.engineeringdigest.journalApp.entity.JournalEntry;
-import net.engineeringdigest.journalApp.entity.User;
-import net.engineeringdigest.journalApp.service.JournalEntryService;
-import net.engineeringdigest.journalApp.service.UserService;
+import net.nitinpal.soulnote.entity.JournalEntry;
+import net.nitinpal.soulnote.entity.User;
+import net.nitinpal.soulnote.service.JournalEntryService;
+import net.nitinpal.soulnote.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

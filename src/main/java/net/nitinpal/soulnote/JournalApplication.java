@@ -1,4 +1,4 @@
-package net.engineeringdigest.journalApp;
+package net.nitinpal.soulnote;
 
 
 import org.springframework.boot.SpringApplication;

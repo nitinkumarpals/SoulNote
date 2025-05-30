@@ -1,4 +1,4 @@
-package net.engineeringdigest.journalApp.entity;
+package net.nitinpal.soulnote.entity;
 
 import lombok.Getter;
 import lombok.NonNull;

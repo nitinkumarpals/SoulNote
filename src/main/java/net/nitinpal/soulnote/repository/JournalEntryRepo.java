@@ -1,6 +1,6 @@
-package net.engineeringdigest.journalApp.repository;
+package net.nitinpal.soulnote.repository;
 
-import net.engineeringdigest.journalApp.entity.JournalEntry;
+import net.nitinpal.soulnote.entity.JournalEntry;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

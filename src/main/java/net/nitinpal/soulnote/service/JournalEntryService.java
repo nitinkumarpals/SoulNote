@@ -1,8 +1,8 @@
-package net.engineeringdigest.journalApp.service;
+package net.nitinpal.soulnote.service;
 
-import net.engineeringdigest.journalApp.entity.JournalEntry;
-import net.engineeringdigest.journalApp.entity.User;
-import net.engineeringdigest.journalApp.repository.JournalEntryRepo;
+import net.nitinpal.soulnote.entity.JournalEntry;
+import net.nitinpal.soulnote.entity.User;
+import net.nitinpal.soulnote.repository.JournalEntryRepo;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class JournalEntryService {
     private UserService userService;
 
     @Transactional
-    public void saveEntry(JournalEntry journalEntry, String username) {
+    public void  saveEntry(JournalEntry journalEntry, String username) {
         User user = userService.findByUsername(username);
         journalEntry.setDate(new Date());
         JournalEntry saved = journalEntryRepo.save(journalEntry);

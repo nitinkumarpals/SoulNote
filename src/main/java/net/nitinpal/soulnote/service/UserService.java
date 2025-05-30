@@ -1,7 +1,7 @@
-package net.engineeringdigest.journalApp.service;
+package net.nitinpal.soulnote.service;
 
-import net.engineeringdigest.journalApp.entity.User;
-import net.engineeringdigest.journalApp.repository.UserRepo;
+import net.nitinpal.soulnote.entity.User;
+import net.nitinpal.soulnote.repository.UserRepo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
