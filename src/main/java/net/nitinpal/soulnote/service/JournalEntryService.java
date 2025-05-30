@@ -29,6 +29,7 @@ public class JournalEntryService {
         journalEntry.setDate(new Date());
         JournalEntry saved = journalEntryRepo.save(journalEntry);
         user.getJournalEntries().add(saved);
+        user.setUsername(null);
         userService.saveUser(user);
     }
 
