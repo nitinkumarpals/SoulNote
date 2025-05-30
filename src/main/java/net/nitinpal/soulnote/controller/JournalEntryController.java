@@ -68,7 +68,7 @@ public class JournalEntryController {
     public ResponseEntity<?> updateJournalById(
             @PathVariable ObjectId myId,
             @RequestBody JournalEntry newEntry,
-            @PathVariable String username
+            @PathVariable String username//it will come in use later
     ) {
         JournalEntry oldEntry = journalEntryService.findById(myId).orElse(null);
         if (oldEntry != null) {
