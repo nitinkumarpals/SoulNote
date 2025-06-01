@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -21,23 +22,22 @@ public class JournalEntryController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("{username}")
-    public ResponseEntity<List<JournalEntry>> getAll(@PathVariable String username) {
-        try {
-            User userInDb = userService.findByUsername(username);
-            List<JournalEntry> all = userInDb.getJournalEntries();
-            if (all != null && !all.isEmpty()) {
-                return new ResponseEntity<>(all, HttpStatus.OK);
-            }
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping
+    public ResponseEntity<List<JournalEntry>> getAll() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User userInDb = userService.findByUsername(username);
+        List<JournalEntry> all = userInDb.getJournalEntries();
+
+        if (all != null && !all.isEmpty()) {
+            return ResponseEntity.ok(all);
         }
+        return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("{username}")
-    public ResponseEntity<?> createEntry(@RequestBody JournalEntry myEntry, @PathVariable String username) {
+    @PostMapping
+    public ResponseEntity<?> createEntry(@RequestBody JournalEntry myEntry) {
         try {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
             journalEntryService.saveEntry(myEntry, username);
             return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -47,16 +47,37 @@ public class JournalEntryController {
         }
     }
 
-    @GetMapping("id/{myId}")
-    public ResponseEntity<?> findJournalById(@PathVariable ObjectId myId) {
-        Optional<JournalEntry> journalEntry = journalEntryService.findById(myId);
-        return journalEntry.isPresent() ?
-                new ResponseEntity<>(journalEntry.get(), HttpStatus.OK) :
-                new ResponseEntity<>("Journal not found", HttpStatus.NOT_FOUND);
+    @GetMapping("id/{journalId}")
+    public ResponseEntity<?> findJournalById(@PathVariable ObjectId journalId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username);
+        Optional<JournalEntry> journalEntry = journalEntryService.findById(journalId);
+
+        if (!journalEntry.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("error", "Journal not found"));
+        }
+        boolean isOwnedByUser = user.getJournalEntries()
+                .stream()
+                .anyMatch(entry -> entry.getId().equals(journalId));
+
+        if (!isOwnedByUser) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Collections.singletonMap("error",
+                            "User: " + username + " tried to access unauthorized journal"));
+        }
+        return ResponseEntity.ok(journalEntry.get());
+
     }
 
-    @DeleteMapping("id/{username}/{myId}")
-    public ResponseEntity<?> deleteJournalById(@PathVariable ObjectId myId, @PathVariable String username) {
+    @DeleteMapping("id/{myId}")
+    public ResponseEntity<?> deleteJournalById(@PathVariable ObjectId myId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username);
+
+        boolean isOwnedByUser = user.getJournalEntries()
+                .stream()
+                .anyMatch(entry -> entry.getId().equals(myId));
         if (!journalEntryService.existsById(myId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Journal not found"));
         }

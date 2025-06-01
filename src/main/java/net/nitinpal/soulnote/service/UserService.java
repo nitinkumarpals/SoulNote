@@ -37,6 +37,10 @@ public class UserService {
         userRepo.save(user);
     }
 
+    public void updateJournalUser(User user) {
+        userRepo.save(user);
+    }
+
     public List<User> getAll() {
         return userRepo.findAll();
     }
@@ -49,9 +53,10 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
-    public void deleteByUsername(String username){
+    public void deleteByUsername(String username) {
         userRepo.deleteByUsername(username);
     }
+
     public User findByUsername(String username) {
         return userRepo.findByUsername(username);
     }

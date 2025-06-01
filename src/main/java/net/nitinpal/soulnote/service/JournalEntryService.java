@@ -24,13 +24,12 @@ public class JournalEntryService {
     private UserService userService;
 
     @Transactional
-    public void saveEntry(JournalEntry journalEntry, String username) {
+    public void  saveEntry(JournalEntry journalEntry, String username) {
         User user = userService.findByUsername(username);
         journalEntry.setDate(new Date());
         JournalEntry saved = journalEntryRepo.save(journalEntry);
         user.getJournalEntries().add(saved);
-        user.setUsername(null);
-        userService.saveUser(user);
+        userService.updateJournalUser(user);
     }
 
     public void updateEntry(JournalEntry journalEntry) {
@@ -56,4 +55,7 @@ public class JournalEntryService {
         journalEntryRepo.deleteById(id);
     }
 
+//    public List<JournalEntry> findByUsername(String username){
+//
+//    }
 }
