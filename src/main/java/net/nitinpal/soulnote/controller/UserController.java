@@ -24,16 +24,6 @@ public class UserController {
 //        }
 //    }
 
-    @PostMapping
-    public ResponseEntity<?> savUser(@RequestBody User user) {
-        try {
-            userService.saveUser(user);
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("error: ", e.getMessage()));
-        }
-    }
-
     @PutMapping("/{username}")
     public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String username) {
         try {
@@ -42,7 +32,7 @@ public class UserController {
                 return ResponseEntity.badRequest().body(Collections.singletonMap("error: ", "User not Found"));
             } else {
                 userInDB.setUsername(user.getUsername());
-                if ( user.getPassword() == null || user.getPassword().isEmpty()) {
+                if (user.getPassword() == null || user.getPassword().isEmpty()) {
                     return ResponseEntity.badRequest().body(Collections.singletonMap("error: ", "Password cannot be empty"));
                 }
                 userInDB.setPassword(user.getPassword());

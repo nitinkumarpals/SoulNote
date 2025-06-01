@@ -41,8 +41,8 @@ public class JournalEntryController {
             journalEntryService.saveEntry(myEntry, username);
             return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         } catch (Exception e) {
-            Map<String,Object> errorResponse = new HashMap<>();
-            errorResponse.put("message","Error saving journal entry: " + e.getMessage());
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Error saving journal entry: " + e.getMessage());
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
@@ -60,7 +60,7 @@ public class JournalEntryController {
         if (!journalEntryService.existsById(myId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Journal not found"));
         }
-        journalEntryService.deleteById(myId,username);
+        journalEntryService.deleteById(myId, username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

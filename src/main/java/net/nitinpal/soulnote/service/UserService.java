@@ -20,6 +20,9 @@ public class UserService {
     private final static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public void saveUser(User user) {
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
         if (userRepo.findByUsername(user.getUsername()) != null) {
             throw new IllegalArgumentException("Username already exists");
         }
