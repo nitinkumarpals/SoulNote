@@ -15,14 +15,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<?> getAllUser() {
-        try {
-            return ResponseEntity.ok(Collections.singletonMap("users found: ", userService.getAll()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ", e));
-        }
-    }
+//    @GetMapping
+//    public ResponseEntity<?> getAllUser() {
+//        try {
+//            return ResponseEntity.ok(Collections.singletonMap("users found: ", userService.getAll()));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error: ", e));
+//        }
+//    }
 
     @PostMapping
     public ResponseEntity<?> savUser(@RequestBody User user) {
