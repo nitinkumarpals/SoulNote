@@ -5,6 +5,8 @@ import net.nitinpal.soulnote.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -24,23 +26,25 @@ public class UserController {
 //        }
 //    }
 
-    @PutMapping("/{username}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String username) {
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
             User userInDB = userService.findByUsername(username);
-            if (userInDB == null) {
-                return ResponseEntity.badRequest().body(Collections.singletonMap("error: ", "User not Found"));
-            } else {
-                userInDB.setUsername(user.getUsername());
-                if (user.getPassword() == null || user.getPassword().isEmpty()) {
-                    return ResponseEntity.badRequest().body(Collections.singletonMap("error: ", "Password cannot be empty"));
-                }
-                userInDB.setPassword(user.getPassword());
-                userService.saveUser(userInDB);
-            }
+            userInDB.setUsername(user.getUsername());
+            userInDB.setPassword(user.getPassword());
+            userService.updateUser(userInDB);
             return ResponseEntity.ok(Collections.singletonMap("message", "User Updated Successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("Error: ", e.getMessage()));
         }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userService.deleteByUsername(authentication.getName());
+        return ResponseEntity.ok("User Deleted Successfully");
     }
 }

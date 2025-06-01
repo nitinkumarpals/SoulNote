@@ -31,6 +31,12 @@ public class UserService {
         userRepo.save(user);
     }
 
+    public void updateUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Collections.singletonList("USER"));
+        userRepo.save(user);
+    }
+
     public List<User> getAll() {
         return userRepo.findAll();
     }
@@ -43,6 +49,9 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
+    public void deleteByUsername(String username){
+        userRepo.deleteByUsername(username);
+    }
     public User findByUsername(String username) {
         return userRepo.findByUsername(username);
     }
