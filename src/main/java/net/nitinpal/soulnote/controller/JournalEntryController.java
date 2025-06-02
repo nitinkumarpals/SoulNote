@@ -73,16 +73,8 @@ public class JournalEntryController {
     @DeleteMapping("id/{myId}")
     public ResponseEntity<?> deleteJournalById(@PathVariable ObjectId myId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(username);
-
-        boolean isOwnedByUser = user.getJournalEntries()
-                .stream()
-                .anyMatch(entry -> entry.getId().equals(myId));
-        if (!journalEntryService.existsById(myId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Journal not found"));
-        }
         journalEntryService.deleteById(myId, username);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("id/{username}/{myId}")
