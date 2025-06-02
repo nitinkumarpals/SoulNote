@@ -64,7 +64,7 @@ public class JournalEntryController {
         if (!isOwnedByUser) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Collections.singletonMap("error",
-                            "User: " + username + " tried to access unauthorized journal"));
+                            "User tried to access unauthorized journal"));
         }
         return ResponseEntity.ok(journalEntry.get());
 
@@ -78,23 +78,37 @@ public class JournalEntryController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message","Journal entry not found"));
+                .body(Collections.singletonMap("message", "Journal entry not found"));
     }
 
-    @PutMapping("id/{username}/{myId}")
+    @PutMapping("id/{myId}")
     public ResponseEntity<?> updateJournalById(
             @PathVariable ObjectId myId,
-            @RequestBody JournalEntry newEntry,
-            @PathVariable String username//it will come in use later
+            @RequestBody JournalEntry newEntry
     ) {
-        JournalEntry oldEntry = journalEntryService.findById(myId).orElse(null);
-        if (oldEntry != null) {
-            oldEntry.setTitle(!newEntry.getTitle().isEmpty() ? newEntry.getTitle() : oldEntry.getTitle());
-            oldEntry.setContent(newEntry.getContent() != null && !newEntry.getContent().isEmpty() ? newEntry.getContent() : oldEntry.getContent());
-            journalEntryService.updateEntry(oldEntry);
-            return new ResponseEntity<>(oldEntry, HttpStatus.OK);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username);
+        Optional<JournalEntry> optionalOldEntry = journalEntryService.findById(myId);
+        if (!optionalOldEntry.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Journal entry not found.");
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        boolean isOwnedByUser = user.getJournalEntries()
+                .stream()
+                .anyMatch(entry -> entry.getId().equals(myId));
+        if (!isOwnedByUser) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("You are not authorized to update this journal entry.");
+        }
+        JournalEntry oldEntry = optionalOldEntry.get();
+        if (newEntry.getTitle() != null && !newEntry.getTitle().trim().isEmpty()) {
+            oldEntry.setTitle(newEntry.getTitle().trim());
+        }
+        if (newEntry.getContent() != null && !newEntry.getContent().trim().isEmpty()) {
+            oldEntry.setContent(newEntry.getContent().trim());
+        }
+        journalEntryService.updateEntry(oldEntry);
+        return ResponseEntity.ok(oldEntry);
     }
 
 }
