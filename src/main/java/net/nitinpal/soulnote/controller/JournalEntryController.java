@@ -73,8 +73,12 @@ public class JournalEntryController {
     @DeleteMapping("id/{myId}")
     public ResponseEntity<?> deleteJournalById(@PathVariable ObjectId myId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        journalEntryService.deleteById(myId, username);
-        return ResponseEntity.noContent().build();
+        boolean removed = journalEntryService.deleteById(myId, username);
+        if (removed) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("message","Journal entry not found"));
     }
 
     @PutMapping("id/{username}/{myId}")

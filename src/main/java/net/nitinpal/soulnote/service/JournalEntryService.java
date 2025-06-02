@@ -49,20 +49,20 @@ public class JournalEntryService {
     }
 
     @Transactional
-    public void deleteById(ObjectId id, String username) {
+    public boolean deleteById(ObjectId id, String username) {
+        boolean removed = false;
         try {
             User user = userService.findByUsername(username);
-            boolean removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
+            removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
             if (removed) {
                 userService.updateJournalUser(user);
                 journalEntryRepo.deleteById(id);
-            } else {
-                throw new IllegalArgumentException("Journal ID not found for user: " + id);
             }
         } catch (Exception e) {
             System.err.println("Error deleting journal: " + e.getMessage());
             throw e;
         }
+        return removed;
     }
 
 //    public List<JournalEntry> findByUsername(String username){
