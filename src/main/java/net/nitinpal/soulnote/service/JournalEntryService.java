@@ -33,6 +33,7 @@ public class JournalEntryService {
     }
 
     public void updateEntry(JournalEntry journalEntry) {
+        journalEntry.setDate(new Date());
         journalEntryRepo.save(journalEntry);
     }
 
